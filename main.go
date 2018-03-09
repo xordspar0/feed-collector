@@ -6,7 +6,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 
-	"fmt"
 	"os"
 )
 
@@ -36,8 +35,14 @@ func main() {
 }
 
 func run(c *cli.Context) {
-	log.Info(fmt.Sprintf("Starting %s version %s", servername, version))
-	s := server.New(c.String("port"), "/")
+	port := c.String("port")
+
+	log.WithFields(log.Fields{
+		"version": version,
+		"port":    port,
+	}).Info("Starting " + servername)
+
+	s := server.New(port, "/")
 	err := s.Start()
 	if err != nil {
 		log.Error(err.Error())
