@@ -21,6 +21,15 @@ func main() {
 	app.Version = version
 	app.HideHelp = true
 
+	app.Flags = []cli.Flag{
+		cli.IntFlag{
+			Name:   "port, p",
+			Value:  80,
+			Usage:  "The port to run the server on",
+			EnvVar: "SQUIRRELBOT_PORT",
+		},
+	}
+
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err.Error())
 	}
@@ -28,7 +37,7 @@ func main() {
 
 func run(c *cli.Context) {
 	log.Info(fmt.Sprintf("Starting %s version %s", servername, version))
-	s := server.New()
+	s := server.New(c.String("port"), "/")
 	err := s.Start()
 	if err != nil {
 		log.Error(err.Error())

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"path"
 )
 
 type Server struct {
@@ -13,16 +14,16 @@ type Server struct {
 	RootEndpoint string
 }
 
-func New() Server {
+func New(port string, rootEndpoint string) Server {
 	return Server{
-		Port:         "8080",
-		RootEndpoint: "",
+		Port:         port,
+		RootEndpoint: rootEndpoint,
 	}
 }
 
 func (s *Server) Start() error {
-	http.HandleFunc(s.RootEndpoint+"/health", s.health)
-	http.HandleFunc(s.RootEndpoint+"/feeds", s.feeds)
+	http.HandleFunc(path.Join(s.RootEndpoint, "health"), s.health)
+	http.HandleFunc(path.Join(s.RootEndpoint, "feeds"), s.feeds)
 
 	return http.ListenAndServe(":"+s.Port, nil)
 }
