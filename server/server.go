@@ -1,8 +1,11 @@
 package server
 
 import (
+	"neolog.xyz/feed-collector/feeds"
+
 	log "github.com/sirupsen/logrus"
 
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -13,6 +16,8 @@ type Server struct {
 	Port         string
 	RootEndpoint string
 }
+
+var healthyResponse string = fmt.Sprintf(`{"status": "%d"}`, http.StatusOK)
 
 func New(port string, rootEndpoint string) Server {
 	return Server{
@@ -34,9 +39,21 @@ func (s *Server) health(w http.ResponseWriter, req *http.Request) {
 		"url":  req.URL,
 	}).Info()
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	io.WriteString(w, fmt.Sprintf(`{"status": "%d"}`, http.StatusOK))
+	io.WriteString(w, healthyResponse)
 }
 
 func (s *Server) feeds(w http.ResponseWriter, req *http.Request) {
-	io.WriteString(w, `{"feeds": []}`)
+	logger := log.WithFields(log.Fields{
+		"host": req.Host,
+		"url":  req.URL,
+	})
+
+	feeds, err := json.Marshal(feeds.New())
+	if err != nil {
+		logger.Error("Failed to marshal json response: " + err.Error())
+		http.Error(w, "500 internal server error", http.StatusInternalServerError)
+	}
+
+	logger.Info()
+	w.Write(feeds)
 }
