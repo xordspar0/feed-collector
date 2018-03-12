@@ -27,6 +27,10 @@ func main() {
 			Usage:  "The port to run the server on",
 			EnvVar: "SQUIRRELBOT_PORT",
 		},
+		cli.BoolFlag{
+			Name: "debug",
+			Usage: "Enable debug messages",
+		},
 	}
 
 	if err := app.Run(os.Args); err != nil {
@@ -35,6 +39,9 @@ func main() {
 }
 
 func run(c *cli.Context) {
+	if c.Bool("debug") {
+		log.SetLevel(log.DebugLevel)	
+	}
 	port := c.String("port")
 
 	log.WithFields(log.Fields{
