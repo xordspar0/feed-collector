@@ -5,10 +5,19 @@ type Feeds struct {
 }
 
 type Feed struct {
-	URL      string `json:"url"`
-	Articles []interface{} `json:"articles"`
+	Name  string `json:"name"`
+	URL   string `json:"url"`
+	Count int    `json:"count"`
 }
 
 func New() Feeds {
 	return Feeds{[]Feed{}}
+}
+
+func (f *Feeds) AddFeed(name, url string) *Feed {
+	f.Feeds = append(f.Feeds, Feed{
+		Name: name,
+		URL:  url,
+	})
+	return &f.Feeds[len(f.Feeds)-1]
 }

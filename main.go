@@ -1,8 +1,6 @@
 package main
 
 import (
-	"neolog.xyz/feed-collector/server"
-
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 
@@ -25,11 +23,29 @@ func main() {
 			Name:   "port, p",
 			Value:  80,
 			Usage:  "The port to run the server on",
-			EnvVar: "SQUIRRELBOT_PORT",
+			EnvVar: "FEED_COLLECTOR_PORT",
 		},
 		cli.BoolFlag{
-			Name: "debug",
-			Usage: "Enable debug messages",
+			Name:   "debug",
+			Usage:  "Enable debug messages",
+			EnvVar: "FEED_COLLECTOR_DEBUG",
+		},
+
+		// Feed specific settings
+		cli.StringFlag{
+			Name:   "nextcloud-news-host",
+			Usage:  "The hostname of the Nextclout News Server",
+			EnvVar: "NEXTCLOUD_NEWS_HOST",
+		},
+		cli.StringFlag{
+			Name:   "nextcloud-news-user",
+			Usage:  "The user to use for accessing Nextcloud News",
+			EnvVar: "NEXTCLOUD_NEWS_USER",
+		},
+		cli.StringFlag{
+			Name:   "nextcloud-news-password",
+			Usage:  "The password to use for accessing Nextcloud News",
+			EnvVar: "NEXTCLOUD_NEWS_PASSWORD",
 		},
 	}
 
@@ -40,7 +56,7 @@ func main() {
 
 func run(c *cli.Context) {
 	if c.Bool("debug") {
-		log.SetLevel(log.DebugLevel)	
+		log.SetLevel(log.DebugLevel)
 	}
 	port := c.String("port")
 
@@ -49,9 +65,15 @@ func run(c *cli.Context) {
 		"port":    port,
 	}).Info("Starting " + servername)
 
-	s := server.New(port, "/")
+	s := Server{
+		Port:                  port,
+		RootEndpoint:          "/",
+		NextcloudNewsHost:     c.String("nextcloud-news-host"),
+		NextcloudNewsUser:     c.String("nextcloud-news-user"),
+		NextcloudNewsPassword: c.String("nextcloud-news-password"),
+	}
 	err := s.Start()
 	if err != nil {
-		log.Error(err.Error())
+		log.Fatal(err.Error())
 	}
 }
