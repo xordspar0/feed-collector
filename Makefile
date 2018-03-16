@@ -2,12 +2,18 @@ binname=feed-collector
 version=devel
 prefix=/usr/local
 
-.PHONY: build clean fmt install test uninstall
+.PHONY: build clean docker fmt install test uninstall
 
 # Building Commands
 
 build:
 	go build -ldflags "-X main.version=$(version)" -o "bin/$(binname)" .
+
+bin/$(binname).linux:
+	env GOOS=linux go build -ldflags "-X main.version=$(version)" -o "bin/$(binname).linux" .
+
+docker: bin/$(binname).linux
+	docker build . --tag $(binname)
 
 # Installing Commands
 
