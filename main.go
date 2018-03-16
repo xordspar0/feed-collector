@@ -16,7 +16,39 @@ func main() {
 	app.Usage = "An API that collects your news feeds"
 	app.Action = run
 	app.Version = version
-	app.HideHelp = true
+	app.HideHelp = false
+
+	cli.HelpFlag = cli.BoolFlag{
+		Name: "help, h",
+		Usage: "Show this help message",
+	}
+	cli.VersionFlag = cli.BoolFlag{
+		Name: "version, v",
+		Usage: "Show the version",
+	}
+	cli.AppHelpTemplate = `NAME:
+   {{.Name}}{{if .Usage}} - {{.Usage}}{{end}}
+
+USAGE:
+   {{if .UsageText}}{{.UsageText}}{{else}}{{.HelpName}} {{if .VisibleFlags}}[options]{{end}} {{if .ArgsUsage}}{{.ArgsUsage}}{{end}}{{end}}{{if .Version}}{{if not .HideVersion}}
+
+VERSION:
+   {{.Version}}{{end}}{{end}}{{if .Description}}
+
+DESCRIPTION:
+   {{.Description}}{{end}}{{if len .Authors}}
+
+AUTHOR{{with $length := len .Authors}}{{if ne 1 $length}}S{{end}}{{end}}:
+   {{range $index, $author := .Authors}}{{if $index}}
+   {{end}}{{$author}}{{end}}{{end}}{{if .VisibleFlags}}
+
+OPTIONS:
+   {{range $index, $option := .VisibleFlags}}{{if $index}}
+   {{end}}{{$option}}{{end}}{{end}}{{if .Copyright}}
+
+COPYRIGHT:
+   {{.Copyright}}{{end}}
+`
 
 	app.Flags = []cli.Flag{
 		cli.IntFlag{
@@ -34,7 +66,7 @@ func main() {
 		// Feed specific settings
 		cli.StringFlag{
 			Name:   "nextcloud-news-host",
-			Usage:  "The hostname of the Nextclout News Server",
+			Usage:  "The hostname of the Nextcloud News Server",
 			EnvVar: "NEXTCLOUD_NEWS_HOST",
 		},
 		cli.StringFlag{
