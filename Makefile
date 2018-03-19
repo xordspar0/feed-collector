@@ -10,7 +10,7 @@ build:
 	go build -ldflags "-X main.version=$(version)" -o "bin/$(binname)" .
 
 docker:
-	env GOOS=linux go build -ldflags "-X main.version=$(version)" -o "bin/$(binname).linux" .
+	env CGO_ENABLED=0 GOOS=linux go build -ldflags "-X main.version=$(version)" -o "bin/$(binname).linux" .
 	docker build . --tag $(binname)
 
 # Installing Commands
