@@ -4,6 +4,7 @@ import (
 	"neolog.xyz/feed-collector/feeds"
 	"neolog.xyz/feed-collector/nextcloudNews"
 
+	"github.com/rs/cors"
 	log "github.com/sirupsen/logrus"
 
 	"encoding/json"
@@ -24,10 +25,12 @@ type Server struct {
 var healthyResponse string = fmt.Sprintf(`{"status": "%d"}`, http.StatusOK)
 
 func (s *Server) Start() error {
-	http.HandleFunc(path.Join(s.RootEndpoint, "health"), s.health)
-	http.HandleFunc(path.Join(s.RootEndpoint, "feeds"), s.feeds)
+	mux := http.NewServeMux()
+	mux.HandleFunc(path.Join(s.RootEndpoint, "health"), s.health)
+	mux.HandleFunc(path.Join(s.RootEndpoint, "feeds"), s.feeds)
 
-	return http.ListenAndServe(":"+s.Port, nil)
+	corsMux := cors.Default().Handler(mux)
+	return http.ListenAndServe(":"+s.Port, corsMux)
 }
 
 func (s *Server) health(w http.ResponseWriter, req *http.Request) {

@@ -19,11 +19,11 @@ func main() {
 	app.HideHelp = false
 
 	cli.HelpFlag = cli.BoolFlag{
-		Name: "help, h",
+		Name:  "help, h",
 		Usage: "Show this help message",
 	}
 	cli.VersionFlag = cli.BoolFlag{
-		Name: "version, v",
+		Name:  "version, v",
 		Usage: "Show the version",
 	}
 	cli.AppHelpTemplate = `NAME:
