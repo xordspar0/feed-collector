@@ -1,4 +1,4 @@
-package nextcloudNews
+package nextcloudnews
 
 import (
 	"encoding/json"

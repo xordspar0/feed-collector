@@ -2,7 +2,7 @@ package main
 
 import (
 	"neolog.xyz/feed-collector/feeds"
-	"neolog.xyz/feed-collector/nextcloudNews"
+	"neolog.xyz/feed-collector/nextcloudnews"
 
 	"github.com/rs/cors"
 	log "github.com/sirupsen/logrus"
@@ -66,13 +66,13 @@ func (s *Server) feeds(w http.ResponseWriter, req *http.Request) {
 			"feed": feed.Name,
 		}).Debug("Requesting feed unread count")
 
-		nextcloudNewsHost := nextcloudNews.New(
+		nextcloudnewsHost := nextcloudnews.New(
 			feed.URL,
 			s.NextcloudNewsUser,
 			s.NextcloudNewsPassword,
 		)
 
-		feed.Count, err = nextcloudNewsHost.GetUnreadCount()
+		feed.Count, err = nextcloudnewsHost.GetUnreadCount()
 		if err != nil {
 			logger.WithFields(log.Fields{
 				"feed":  feed.Name,
