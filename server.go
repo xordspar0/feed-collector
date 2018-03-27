@@ -64,7 +64,7 @@ func (s *Server) feeds(w http.ResponseWriter, req *http.Request) {
 	var feed *feeds.Feed
 	var err error
 
-	feed = responseData.AddFeed("Nextcloud News", s.NextcloudNewsHost)
+	feed = responseData.AddFeed("Nextcloud News", s.NextcloudNewsHost + "/apps/news/")
 	if s.NextcloudNewsUser != "" && s.NextcloudNewsPassword != "" {
 		logger.WithFields(log.Fields{
 			"feed": feed.Name,
