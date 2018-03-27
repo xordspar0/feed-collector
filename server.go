@@ -3,6 +3,7 @@ package main
 import (
 	"neolog.xyz/feed-collector/feeds"
 	"neolog.xyz/feed-collector/nextcloudnews"
+	"neolog.xyz/feed-collector/pocket"
 
 	"github.com/rs/cors"
 	log "github.com/sirupsen/logrus"
@@ -15,11 +16,14 @@ import (
 )
 
 type Server struct {
-	Port                  string
-	RootEndpoint          string
+	Port         string
+	RootEndpoint string
+
 	NextcloudNewsHost     string
 	NextcloudNewsUser     string
 	NextcloudNewsPassword string
+	PocketAccessToken     string
+	PocketConsumerKey     string
 }
 
 var healthyResponse string = fmt.Sprintf(`{"status": "%d"}`, http.StatusOK)
@@ -87,7 +91,31 @@ func (s *Server) feeds(w http.ResponseWriter, req *http.Request) {
 	} else {
 		logger.WithFields(
 			log.Fields{"feed": feed.Name},
-		).Error("No credentials for feed")
+		).Error("Missing credentials for feed")
+	}
+
+	feed = responseData.AddFeed("Pocket", "https://getpocket.com")
+	if s.PocketAccessToken == "" {
+		logger.WithFields(
+			log.Fields{"feed": feed.Name},
+		).Error("Missing Pocket access token")
+	} else if s.PocketConsumerKey == "" {
+		logger.WithFields(
+			log.Fields{"feed": feed.Name},
+		).Error("Missing Pocket consumer key")
+	} else {
+		logger.WithFields(log.Fields{
+			"feed": feed.Name,
+		}).Debug("Requesting feed unread count")
+
+		pocketUser := pocket.NewUser(s.PocketAccessToken, s.PocketConsumerKey)
+		feed.Count, err = pocketUser.GetUnreadCount()
+		if err != nil {
+			logger.WithFields(log.Fields{
+				"feed":  feed.Name,
+				"error": err.Error(),
+			}).Error("Failed to count articles")
+		}
 	}
 
 	resp, err := json.Marshal(responseData)

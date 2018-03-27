@@ -79,6 +79,16 @@ COPYRIGHT:
 			Usage:  "The password to use for accessing Nextcloud News",
 			EnvVar: "NEXTCLOUD_NEWS_PASSWORD",
 		},
+		cli.StringFlag{
+			Name:   "pocket-access-token",
+			Usage:  "The token for a Pocket user",
+			EnvVar: "POCKET_ACCESS_TOKEN",
+		},
+		cli.StringFlag{
+			Name:   "pocket-consumer-key",
+			Usage:  "The key for accessing the Pocket API",
+			EnvVar: "POCKET_CONSUMER_KEY",
+		},
 	}
 
 	if err := app.Run(os.Args); err != nil {
@@ -103,6 +113,8 @@ func run(c *cli.Context) {
 		NextcloudNewsHost:     c.String("nextcloud-news-host"),
 		NextcloudNewsUser:     c.String("nextcloud-news-user"),
 		NextcloudNewsPassword: c.String("nextcloud-news-password"),
+		PocketAccessToken:     c.String("pocket-access-token"),
+		PocketConsumerKey:     c.String("pocket-consumer-key"),
 	}
 	err := s.Start()
 	if err != nil {
