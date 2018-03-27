@@ -2,7 +2,7 @@ package nextcloudnews
 
 import (
 	"encoding/json"
-	"errors"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -58,7 +58,7 @@ func (h Host) GetFeeds() (feeds Feeds, err error) {
 	}
 
 	if resp.StatusCode != 200 {
-		return feeds, errors.New(resp.Status)
+		return feeds, fmt.Errorf(resp.Status)
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)

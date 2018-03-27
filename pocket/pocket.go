@@ -2,7 +2,7 @@ package pocket
 
 import (
 	"encoding/json"
-	"errors"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -55,7 +55,11 @@ func (u User) GetList() (list List, err error) {
 	}
 
 	if resp.StatusCode != 200 {
-		return list, errors.New(resp.Status)
+		errorHeader, ok := resp.Header["X-Error"]
+		if ok {
+			return list, fmt.Errorf("%s: %s", resp.Status, errorHeader)
+		}
+		return list, fmt.Errorf(resp.Status)
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
@@ -69,7 +73,7 @@ func (u User) GetList() (list List, err error) {
 	}
 
 	if list.Error != "" {
-		return list, errors.New(list.Error)
+		return list, fmt.Errorf(list.Error)
 	}
 
 	return list, nil
