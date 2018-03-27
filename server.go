@@ -71,7 +71,7 @@ func (s *Server) feeds(w http.ResponseWriter, req *http.Request) {
 		}).Debug("Requesting feed unread count")
 
 		nextcloudnewsHost := nextcloudnews.New(
-			feed.URL,
+			s.NextcloudNewsHost,
 			s.NextcloudNewsUser,
 			s.NextcloudNewsPassword,
 		)
