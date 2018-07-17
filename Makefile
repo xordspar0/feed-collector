@@ -2,7 +2,7 @@ binname=feed-collector
 version=devel
 prefix=/usr/local
 
-.PHONY: build clean docker fmt install test uninstall
+.PHONY: build clean docker fmt test
 
 # Building Commands
 
@@ -12,16 +12,6 @@ build:
 docker:
 	env CGO_ENABLED=0 GOOS=linux go build -ldflags "-X main.version=$(version)" -o "bin/$(binname).linux" .
 	docker build . --tag $(binname)
-
-# Installing Commands
-
-install: build
-	install -Dm 755 "bin/$(binname)" "$(prefix)/bin/$(binname)"
-	install -Dm 644 system/squirrelbot.service "$(systemd_unit_path)/squirrelbot.service"
-
-uninstall:
-	-rm -f "$(prefix)/bin/$(binname)"
-	-rm -f "$(systemd_unit_path)/squirrelbot.service"
 
 # Maintenance Commands
 
