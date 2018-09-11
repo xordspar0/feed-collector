@@ -13,5 +13,5 @@ RUN apk --no-cache add ca-certificates curl
 
 COPY --from=build /src/feed-collector/bin/feed-collector /usr/local/bin/feed-collector
 
-HEALTHCHECK CMD curl -f http://localhost/health || exit 1
+HEALTHCHECK CMD curl --silent --show-error --fail http://localhost/health || exit 1
 CMD ["/usr/local/bin/feed-collector"]
