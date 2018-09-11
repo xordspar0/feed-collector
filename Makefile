@@ -7,10 +7,9 @@ prefix=/usr/local
 # Building Commands
 
 build:
-	go build -ldflags "-X main.version=$(version)" -o "bin/$(binname)" .
+	env CGO_ENABLED=0 go build -ldflags "-X main.version=$(version)" -o "bin/$(binname)" .
 
 docker:
-	env CGO_ENABLED=0 GOOS=linux go build -ldflags "-X main.version=$(version)" -o "bin/$(binname).linux" .
 	docker build . --tag $(binname)
 
 # Maintenance Commands

@@ -1,0 +1,10 @@
+github.com/rs/cors v1.3.0 h1:R0sy4XekGcOFoby9D76NXXg2birJ3WFkzGvXF9Kn3xE=
+github.com/rs/cors v1.3.0/go.mod h1:gFx+x8UowdsKA9AchylcLynDq+nNFfI8FkUZdN/jGCU=
+github.com/sirupsen/logrus v1.0.4 h1:gzbtLsZC3Ic5PptoRG+kQj4L60qjK7H7XszrU163JNQ=
+github.com/sirupsen/logrus v1.0.4/go.mod h1:pMByvHTf9Beacp5x1UXfOR9xyW/9antXMhjMPG0dEzc=
+github.com/urfave/cli v1.20.0 h1:fDqGv3UG/4jbVl/QkFwEdddtEDjh/5Ov6X+0B/3bPaw=
+github.com/urfave/cli v1.20.0/go.mod h1:70zkFmudgCuE/ngEzBv17Jvp/497gISqfk5gWijbERA=
+golang.org/x/crypto v0.0.0-20180308185624-c7dcf104e3a7 h1:c9Tyi4qyEZwEJ1+Zm6Fcqf+68wmUdMzfXYTp3s8Nzg8=
+golang.org/x/crypto v0.0.0-20180308185624-c7dcf104e3a7/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=
+golang.org/x/sys v0.0.0-20180308152046-7dca6fe1f437 h1:ybxsSLckDK17jUTy3W9NsUT/B/9ik5fJr1y8KnwJPZ4=
+golang.org/x/sys v0.0.0-20180308152046-7dca6fe1f437/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
