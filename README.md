@@ -5,31 +5,18 @@ in each
 
 ## Building
 
-1. Install dependencies
+Simply run
 
-  feed-collector uses go `dep` to manage dependencies. Find out how to install
-  `dep` [here](https://golang.github.io/dep/).
+```sh
+make
+```
 
-  After `dep` is installed, install the dependencies by running
+If you want to install feed-collector globally on your system, you may
+optionally run
 
-  ```sh
-  dep ensure
-  ```
-
-2. Build
-
-  Once the dependencies are installed, simply run
-
-  ```sh
-  make
-  ```
-
-  If you want to install feed-collector globally on your system, you may
-  optionally run
-
-  ```sh
-  sudo make install
-  ```
+```sh
+sudo make install
+```
 
 ## Running
 
