@@ -97,3 +97,8 @@ services:
       - NEXTCLOUD_NEWS_USER=me
       - NEXTCLOUD_NEWS_PASSWORD=${NEXTCLOUD_NEWS_PASSWORD}
 ```
+
+## Copying
+
+feed-collector is released under the terms of the GNU GPL version 3 or later.
+For more information, see the LICENSE file.
