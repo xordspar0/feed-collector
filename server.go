@@ -49,7 +49,7 @@ func (s *Server) health(w http.ResponseWriter, req *http.Request) {
 
 	logger.WithFields(log.Fields{
 		"status": http.StatusOK,
-	}).Info("Received request")
+	}).Debug("Received request")
 }
 
 func (s *Server) feeds(w http.ResponseWriter, req *http.Request) {
