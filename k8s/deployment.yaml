@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: feed-collector
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: feed-collector
+  template:
+    metadata:
+      labels:
+        app: feed-collector
+    spec:
+      containers:
+        - name: feed-collector
+          image: xordspar0/feed-collector
+          imagePullPolicy: Always
+          env:
+            - name: NEXTCLOUD_NEWS_HOST
+              value: https://nextcloud.neolog.xyz
+            - name: NEXTCLOUD_NEWS_USER
+              valueFrom:
+                secretKeyRef:
+                  name: nextcloud-news
+                  key: user
+                  optional: true
+            - name: NEXTCLOUD_NEWS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: nextcloud-news
+                  key: password
+                  optional: true
+            - name: POCKET_ACCESS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: pocket
+                  key: access-token
+                  optional: true
+            - name: POCKET_CONSUMER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: pocket
+                  key: consumer-key
+                  optional: true
+          ports:
+            - containerPort: 80
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
