@@ -94,8 +94,16 @@ services:
     restart: always
     environment:
       - NEXTCLOUD_NEWS_HOST=https://example.com
-      - NEXTCLOUD_NEWS_USER=me
-      - NEXTCLOUD_NEWS_PASSWORD=${NEXTCLOUD_NEWS_PASSWORD}
+      - NEXTCLOUD_NEWS_USER
+      - NEXTCLOUD_NEWS_PASSWORD
+```
+
+Note that if you don't specify a value for an environment variable in a
+compose file, it will use values from the host environment. You could populate
+environment variables like this:
+
+```
+env NEXTCLOUD_NEEWS_USER=me NEXTCLOUD_NEWS_PASSWORD=asdf docker-compose up -d
 ```
 
 ## Copying
