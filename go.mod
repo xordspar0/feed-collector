@@ -1,5 +1,7 @@
 module neolog.xyz/feed-collector
 
+go 1.14
+
 require (
 	github.com/rs/cors v1.3.0
 	github.com/sirupsen/logrus v1.0.4
