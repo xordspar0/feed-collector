@@ -3,9 +3,8 @@ module neolog.xyz/feed-collector
 go 1.14
 
 require (
-	github.com/rs/cors v1.3.0
-	github.com/sirupsen/logrus v1.0.4
-	github.com/urfave/cli v1.20.0
-	golang.org/x/crypto v0.0.0-20180308185624-c7dcf104e3a7
-	golang.org/x/sys v0.0.0-20180308152046-7dca6fe1f437
+	github.com/rs/cors v1.8.3
+	github.com/sirupsen/logrus v1.9.0
+	github.com/urfave/cli v1.22.12
+	golang.org/x/sys v0.5.0 // indirect
 )
