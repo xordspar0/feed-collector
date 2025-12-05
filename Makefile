@@ -1,6 +1,5 @@
 binname=feed-collector
 version=devel
-prefix=/usr/local
 
 .PHONY: build clean docker fmt test
 

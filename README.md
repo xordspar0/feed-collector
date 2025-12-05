@@ -5,17 +5,8 @@ in each
 
 ## Building
 
-Simply run
-
 ```sh
 make
-```
-
-If you want to install feed-collector globally on your system, you may
-optionally run
-
-```sh
-sudo make install
 ```
 
 ## Running
@@ -26,19 +17,10 @@ feed-collector is configured using command line flags:
 feed-collector --port 8080 --debug
 ```
 
-You can also configure feed-collector's options using environment variables, for
-example:
+You can also configure feed-collector's options using environment variables:
 
 ```sh
-env FEED_COLLECTOR_PORT=8080 FEED_COLLECTOR_DEBUG=true feed-collector
-```
-
-or
-
-```sh
-export FEED_COLLECTOR_PORT=8080
-export FEED_COLLECTOR_DEBUG=true
-feed-collector
+FEED_COLLECTOR_PORT=8080 FEED_COLLECTOR_DEBUG=true feed-collector
 ```
 
 ### General Options
