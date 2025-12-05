@@ -6,11 +6,11 @@ import (
 	"neolog.xyz/feed-collector/pocket"
 
 	"github.com/rs/cors"
-	log "github.com/sirupsen/logrus"
 
 	"encoding/json"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"path"
 )
@@ -18,6 +18,7 @@ import (
 type Server struct {
 	Port         string
 	RootEndpoint string
+	Logger       *slog.Logger
 
 	NextcloudNewsHost     string
 	NextcloudNewsUser     string
@@ -38,25 +39,23 @@ func (s *Server) Start() error {
 }
 
 func (s *Server) health(w http.ResponseWriter, req *http.Request) {
-	logger := log.WithFields(log.Fields{
-		"host": req.Host,
-		"url":  req.URL,
-	})
+	logger := s.Logger.With(
+		"host", req.Host,
+		"url", req.URL,
+	)
 	logger.Debug("Handling request")
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	io.WriteString(w, healthyResponse)
 
-	logger.WithFields(log.Fields{
-		"status": http.StatusOK,
-	}).Debug("Received request")
+	logger.Debug("Received request", "status", http.StatusOK)
 }
 
 func (s *Server) feeds(w http.ResponseWriter, req *http.Request) {
-	logger := log.WithFields(log.Fields{
-		"host": req.Host,
-		"url":  req.URL,
-	})
+	logger := s.Logger.With(
+		"host", req.Host,
+		"url", req.URL,
+	)
 	logger.Debug("Handling request")
 
 	responseData := feeds.New()
@@ -64,11 +63,11 @@ func (s *Server) feeds(w http.ResponseWriter, req *http.Request) {
 	var feed *feeds.Feed
 	var err error
 
-	feed = responseData.AddFeed("Nextcloud News", s.NextcloudNewsHost + "/apps/news/")
+	feed = responseData.AddFeed("Nextcloud News", s.NextcloudNewsHost+"/apps/news/")
 	if s.NextcloudNewsUser != "" && s.NextcloudNewsPassword != "" {
-		logger.WithFields(log.Fields{
-			"feed": feed.Name,
-		}).Debug("Requesting feed unread count")
+		logger.Debug("Requesting feed unread count",
+			"feed", feed.Name,
+		)
 
 		nextcloudnewsHost := nextcloudnews.New(
 			s.NextcloudNewsHost,
@@ -78,56 +77,48 @@ func (s *Server) feeds(w http.ResponseWriter, req *http.Request) {
 
 		feed.Count, err = nextcloudnewsHost.GetUnreadCount()
 		if err != nil {
-			logger.WithFields(log.Fields{
-				"feed":  feed.Name,
-				"error": err.Error(),
-			}).Error("Failed to count articles")
+			logger.Error("Failed to count articles",
+				"feed", feed.Name,
+				"error", err.Error(),
+			)
 		}
 
-		logger.WithFields(log.Fields{
-			"feed":  feed.Name,
-			"count": feed.Count,
-		}).Debug("Received unread count")
+		logger.Debug("Received unread count",
+			"feed", feed.Name,
+			"count", feed.Count,
+		)
 	} else {
-		logger.WithFields(
-			log.Fields{"feed": feed.Name},
-		).Error("Missing credentials for feed")
+		logger.Error("Missing credentials for feed", "feed", feed.Name)
 	}
 
 	feed = responseData.AddFeed("Pocket", "https://getpocket.com")
 	if s.PocketAccessToken == "" {
-		logger.WithFields(
-			log.Fields{"feed": feed.Name},
-		).Error("Missing Pocket access token")
+		logger.Error("Missing Pocket access token", "feed", feed.Name)
 	} else if s.PocketConsumerKey == "" {
-		logger.WithFields(
-			log.Fields{"feed": feed.Name},
-		).Error("Missing Pocket consumer key")
+		logger.Error("Missing Pocket consumer key", "feed", feed.Name)
 	} else {
-		logger.WithFields(log.Fields{
-			"feed": feed.Name,
-		}).Debug("Requesting feed unread count")
+		logger.Debug("Requesting feed unread count", "feed", feed.Name)
 
 		pocketUser := pocket.NewUser(s.PocketAccessToken, s.PocketConsumerKey)
 		feed.Count, err = pocketUser.GetUnreadCount()
 		if err != nil {
-			logger.WithFields(log.Fields{
-				"feed":  feed.Name,
-				"error": err.Error(),
-			}).Error("Failed to count articles")
+			logger.Error("Failed to count articles",
+				"feed", feed.Name,
+				"error", err.Error(),
+			)
 		}
 	}
 
 	resp, err := json.Marshal(responseData)
 	if err != nil {
-		logger.Error("Failed to marshal json response: " + err.Error())
+		logger.Error("Failed to marshal json response", "error", err.Error())
 		http.Error(w, "500 internal server error", http.StatusInternalServerError)
 		return
 	}
 
 	w.Write(resp)
 
-	logger.WithFields(log.Fields{
-		"status": http.StatusOK,
-	}).Info("Served request")
+	logger.Info("Served request",
+		"status", http.StatusOK,
+	)
 }

@@ -1,9 +1,9 @@
 package main
 
 import (
-	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 
+	"log/slog"
 	"os"
 )
 
@@ -92,24 +92,29 @@ COPYRIGHT:
 	}
 
 	if err := app.Run(os.Args); err != nil {
-		log.Fatal(err.Error())
+		slog.Error("Failed to initialize", "error", err)
+		os.Exit(1)
 	}
 }
 
 func run(c *cli.Context) {
+	logLevel := slog.LevelInfo
 	if c.Bool("debug") {
-		log.SetLevel(log.DebugLevel)
+		logLevel = slog.LevelDebug
 	}
+	logger := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: logLevel}))
+
 	port := c.String("port")
 
-	log.WithFields(log.Fields{
-		"version": version,
-		"port":    port,
-	}).Info("Starting " + servername)
+	logger.Info("Starting "+servername,
+		"version", version,
+		"port", port,
+	)
 
 	s := Server{
 		Port:                  port,
 		RootEndpoint:          "/",
+		Logger:                logger,
 		NextcloudNewsHost:     c.String("nextcloud-news-host"),
 		NextcloudNewsUser:     c.String("nextcloud-news-user"),
 		NextcloudNewsPassword: c.String("nextcloud-news-password"),
@@ -118,6 +123,7 @@ func run(c *cli.Context) {
 	}
 	err := s.Start()
 	if err != nil {
-		log.Fatal(err.Error())
+		slog.Error("Failed to start server", "error", err.Error())
+		os.Exit(1)
 	}
 }
